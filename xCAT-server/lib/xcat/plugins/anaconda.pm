@@ -1226,34 +1226,34 @@ sub mkinstall
 
         if (
             (
-                $arch =~ /x86/ and
-                (
-                    -r "$pkgdir/images/pxeboot/vmlinuz"
-                    and $kernpath = "$pkgdir/images/pxeboot/vmlinuz"
-                    and -r "$pkgdir/images/pxeboot/initrd.img"
-                    and $initrdpath = "$pkgdir/images/pxeboot/initrd.img"
-                ) or (    #Handle the case seen in VMWare 4.0 ESX media
-                       #In VMWare 4.0 they dropped the pxe-optimized initrd
-                       #leaving us no recourse but the rather large optical disk
-                       #initrd, but perhaps we can mitigate with gPXE
-                    -d "$pkgdir/VMware"
-                    and -r "$pkgdir/isolinux/vmlinuz"
-                    and $kernpath = "$pkgdir/isolinux/vmlinuz"
-                    and -r "$pkgdir/isolinux/initrd.img"
-                    and $initrdpath = "$pkgdir/isolinux/initrd.img"
-                    and $maxmem = "512M" #Have to give up linux room to make room for vmware hypervisor evidently
-                ) or ( #Handle the case seen in VMware ESXi 4.1 media scripted installs.
-                    -r "$pkgdir/mboot.c32"
-                    and -r "$pkgdir/vmkboot.gz"
-                    and -r "$pkgdir/vmkernel.gz"
-                    and -r "$pkgdir/sys.vgz"
-                    and -r "$pkgdir/cim.vgz"
-                    and -r "$pkgdir/ienviron.vgz"
-                    and -r "$pkgdir/install.vgz"
-                    and $esxi = 'true'
+                 ( $arch =~ /x86/ or $arch =~ /aarch64/ ) and 
+                    (
+                         -r "$pkgdir/images/pxeboot/vmlinuz"
+                         and $kernpath = "$pkgdir/images/pxeboot/vmlinuz"
+                         and -r "$pkgdir/images/pxeboot/initrd.img"
+                         and $initrdpath = "$pkgdir/images/pxeboot/initrd.img"
+                    ) or ( #Handle the case seen in VMWare 4.0 ESX media
+                        #In VMWare 4.0 they dropped the pxe-optimized initrd
+                        #leaving us no recourse but the rather large optical disk
+                        #initrd, but perhaps we can mitigate with gPXE
+                         -d "$pkgdir/VMware" 
+                         and -r "$pkgdir/isolinux/vmlinuz"
+                         and $kernpath ="$pkgdir/isolinux/vmlinuz"
+                         and -r "$pkgdir/isolinux/initrd.img"
+                         and $initrdpath = "$pkgdir/isolinux/initrd.img"
+                         and $maxmem="512M" #Have to give up linux room to make room for vmware hypervisor evidently
+                    ) or ( #Handle the case seen in VMware ESXi 4.1 media scripted installs.
+                         -r "$pkgdir/mboot.c32"
+                         and -r "$pkgdir/vmkboot.gz"
+                         and -r "$pkgdir/vmkernel.gz"
+                         and -r "$pkgdir/sys.vgz"
+                         and -r "$pkgdir/cim.vgz"
+                         and -r "$pkgdir/ienviron.vgz"
+                         and -r "$pkgdir/install.vgz"
+                         and $esxi = 'true'
 
-                )
-            ) or ($arch =~ /ppc/
+                    )
+            ) or (    $arch =~ /ppc/
                 and ((-r "$pkgdir/ppc/ppc64/vmlinuz"
                         and $kernpath = "$pkgdir/ppc/ppc64/vmlinuz")
                     or (-r "$pkgdir/ppc/ppc64le/vmlinuz"
